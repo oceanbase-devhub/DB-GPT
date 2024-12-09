@@ -17,6 +17,7 @@ PIP_INDEX_URL="https://pypi.org/simple"
 LANGUAGE="en"
 BUILD_LOCAL_CODE="true"
 LOAD_EXAMPLES="true"
+BUILD_PLATFORM=""
 BUILD_NETWORK=""
 DB_GPT_INSTALL_MODEL="default"
 
@@ -76,6 +77,11 @@ while [[ $# -gt 0 ]]; do
         shift
         shift
         ;;
+        --platform)
+        BUILD_PLATFORM=" --platform $2 "
+        shift # past argument
+        shift # past value
+        ;;
         --network)
         BUILD_NETWORK=" --network $2 "
         shift # past argument
@@ -132,7 +138,7 @@ fi
 
 echo "Begin build docker image, base image: ${BASE_IMAGE}, target image name: ${IMAGE_NAME}"
 
-docker build $BUILD_NETWORK \
+docker build $BUILD_PLATFORM $BUILD_NETWORK \
     --build-arg BASE_IMAGE=$BASE_IMAGE \
     --build-arg PIP_INDEX_URL=$PIP_INDEX_URL \
     --build-arg LANGUAGE=$LANGUAGE \
