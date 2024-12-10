@@ -86,12 +86,13 @@ else
     print_message "success" "通义API KEY配置成功!\n"
 fi
 
+mysql -h "$DBGPT_OB_HOST" -P "$DBGPT_OB_PORT" -u "$DBGPT_OB_USER" -p"$DBGPT_OB_PASSWORD" -D$DBGPT_OB_DATABASE < "./oceanbase-chat-data-example.sql"
 mysql -h "$DBGPT_OB_HOST" -P "$DBGPT_OB_PORT" -u "$DBGPT_OB_USER" -p"$DBGPT_OB_PASSWORD" -D$DBGPT_OB_DATABASE -e "SHOW TABLES"
 if [[ $? != 0 ]]; then
-    print_message "error" "$DB_DATABASE 数据库连接失败!\n"
+    print_message "error" "$DB_DATABASE 数据库连接与数据初始化失败!\n"
     exit
 else
-    print_message "success" "$DB_DATABASE 数据库连接成功~\n"
+    print_message "success" "$DB_DATABASE 数据库连接与数据初始化成功~\n"
 fi
 
 if [ "$(docker ps -a -q -f name=dbgpt)" ]; then
