@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS obvec;
-DROP TABLE IF EXISTS dbgpt_profile;
 DROP TABLE IF EXISTS plant_and_animal_table;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS users;
