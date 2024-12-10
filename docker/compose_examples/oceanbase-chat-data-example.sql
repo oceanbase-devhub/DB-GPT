@@ -40,7 +40,7 @@ INSERT INTO orders (user_id, product_id, quantity) VALUES
 CREATE TABLE plant_and_animal_table (
     id INT NOT NULL AUTO_INCREMENT,
     name text,
-    name_embedding VECTOR(1024),
+    name_embedding VECTOR(1536),
     PRIMARY KEY (id)
 );
 INSERT INTO plant_and_animal_table (name, name_embedding) VALUES 
