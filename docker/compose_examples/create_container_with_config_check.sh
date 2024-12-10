@@ -18,16 +18,16 @@ print_message() {
     local message=$2
     case $type in
     "info")
-        echo "${BLUE}$message${NC}"
+        echo -e "${BLUE}$message${NC}"
         ;;
     "success")
-        echo "${GREEN}$message${NC}"
+        echo -e "${GREEN}$message${NC}"
         ;;
     "error")
-        echo "${RED}$message${NC}"
+        echo -e "${RED}$message${NC}"
         ;;
     *)
-        echo "${BLUE}$message${NC}"
+        echo -e "${BLUE}$message${NC}"
         ;;
     esac
 }
@@ -38,12 +38,14 @@ update_env_var() {
     local current_value=${!var_name}
 
     # 提示用户输入新的值
-    read -p "$(echo $BLUE"${comment}（回车以保持当前值: ${current_value}）: "$NC)" new_value
+    read -p "$(echo -e $BLUE"${comment}（回车以保持当前值: ${current_value}）: "$NC)" new_value
 
     # 如果用户输入了新的值，则更新环境变量
     if [ -n "$new_value" ]; then
+        export $var_name="$new_value"
         echo "$var_name=\"$new_value\"" >> "$TMP_FILE"
     else
+        export $var_name="$current_value"
         echo "$var_name=\"$current_value\"" >> "$TMP_FILE"
     fi
 }
