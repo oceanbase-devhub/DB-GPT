@@ -94,6 +94,9 @@ else
     print_message "success" "$DB_DATABASE 数据库连接成功~\n"
 fi
 
+if [ "$(docker ps -a -q -f name=dbgpt)" ]; then
+    docker rm -f dbgpt
+fi
 docker run --ipc host -d -p 5670:5670 \
 -e LLM_MODEL=tongyi_proxyllm -e PROXYLLM_BACKEND=qwen-turbo \
 -e EMBEDDING_MODEL=proxy_tongyi -e proxy_tongyi_proxy_api_key=$DBGPT_TONGYI_API_KEY \
