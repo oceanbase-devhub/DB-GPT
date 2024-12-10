@@ -1,4 +1,9 @@
+DROP TABLE IF EXISTS obvec;
+DROP TABLE IF EXISTS dbgpt_profile;
+DROP TABLE IF EXISTS plant_and_animal_table;
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS products;
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -9,7 +14,6 @@ INSERT INTO users (name, email) VALUES
 ('Bob', 'bob@example.com'),
 ('Charlie', 'charlie@example.com');
 
-DROP TABLE IF EXISTS products;
 CREATE TABLE products (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
@@ -20,7 +24,6 @@ INSERT INTO products (name, price) VALUES
 ('Product B', 30.00),
 ('Product C', 25.50);
 
-DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -34,7 +37,6 @@ INSERT INTO orders (user_id, product_id, quantity) VALUES
 (1, 2, 1),  -- Alice购买1个Product B
 (2, 3, 3);  -- Bob购买3个Product C
 
-DROP TABLE IF EXISTS plant_and_animal_table;
 CREATE TABLE plant_and_animal_table (
     id INT NOT NULL AUTO_INCREMENT,
     name text,
