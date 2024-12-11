@@ -27,9 +27,10 @@ Constraint:
     1.Please understand the user's intention based on the user's question, and use the given table structure definition to create a grammatically correct {dialect} sql. If sql is not required, answer the user's question directly.. 
     2.Always limit the query to a maximum of {top_k} results unless the user specifies in the question the specific number of rows of data he wishes to obtain.
     3.You can only use the tables provided in the table structure information to generate sql. If you cannot generate sql based on the provided table structure, please say: "The table structure information provided is not enough to generate sql queries." It is prohibited to fabricate information at will.
-    4.Please be careful not to mistake the relationship between tables and columns when generating SQL.
-    5.Please check the correctness of the SQL and ensure that the query performance is optimized under correct conditions.
-    6.Please choose the best one from the display methods given below for data rendering, and put the type name into the name parameter value that returns the required format. If you cannot find the most suitable one, use 'Table' as the display method. , the available data display methods are as follows: {display_type}
+    4.If the user asks about the table structure or schema, please generate a SQL statement of 'DESC <table name>', where '<table name>' should be inferred from the context.
+    5.Please be careful not to mistake the relationship between tables and columns when generating SQL.
+    6.Please check the correctness of the SQL and ensure that the query performance is optimized under correct conditions.
+    7.Please choose the best one from the display methods given below for data rendering, and put the type name into the name parameter value that returns the required format. If you cannot find the most suitable one, use 'Table' as the display method. , the available data display methods are as follows: {display_type}
     
 User Question:
     {user_input}
@@ -50,9 +51,10 @@ _DEFAULT_TEMPLATE_ZH = """
     1. 请根据用户问题理解用户意图，使用给出表结构定义创建一个语法正确的 {dialect} sql，如果不需要sql，则直接回答用户问题。
     2. 除非用户在问题中指定了他希望获得的具体数据行数，否则始终将查询限制为最多 {top_k} 个结果。
     3. 只能使用表结构信息中提供的表来生成 sql，如果无法根据提供的表结构中生成 sql ，请说：“提供的表结构信息不足以生成 sql 查询。” 禁止随意捏造信息。
-    4. 请注意生成SQL时不要弄错表和列的关系
-    5. 请检查SQL的正确性，并保证正确的情况下优化查询性能
-    6.请从如下给出的展示方式种选择最优的一种用以进行数据渲染，将类型名称放入返回要求格式的name参数值种，如果找不到最合适的则使用'Table'作为展示方式，可用数据展示方式如下: {display_type}
+    4. 如果用户询问表结构或者表schema，请生成'DESC <表名>'这样的SQL语句，'<表名>'请根据上下文推断。
+    5. 请注意生成SQL时不要弄错表和列的关系
+    6. 请检查SQL的正确性，并保证正确的情况下优化查询性能
+    7.请从如下给出的展示方式种选择最优的一种用以进行数据渲染，将类型名称放入返回要求格式的name参数值种，如果找不到最合适的则使用'Table'作为展示方式，可用数据展示方式如下: {display_type}
 用户问题:
     {user_input}
 请一步步思考并按照以下JSON格式回复：
@@ -71,6 +73,7 @@ PROMPT_SCENE_DEFINE = (
 
 RESPONSE_FORMAT_SIMPLE = {
     "thoughts": "thoughts summary to say to user",
+    "direct_response": "If the context is sufficient to answer user, reply directly without sql",
     "sql": "SQL Query to run",
     "display_type": "Data display method",
 }
