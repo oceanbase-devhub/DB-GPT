@@ -64,6 +64,12 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 git clone https://github.com/oceanbase-devhub/DB-GPT
 ```
 
+如果上述命令执行遇到问题，可能是访问 github 存在困难，可以使用以下指令从 gitee 获取项目代码：
+
+```bash
+git clone https://gitee.com/oceanbase-devhub/DB-GPT.git
+```
+
 ### 4. 拉取 Docker 镜像
 
 ```bash
