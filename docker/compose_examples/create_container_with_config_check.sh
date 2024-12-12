@@ -115,7 +115,7 @@ ELAPSED=0
 BOOT_OK=0
 
 while [ $ELAPSED -lt $TIMEOUT ]; do
-  LAST_LOG=$(docker logs "$CONTAINER" --tail 1 2>&1)
+  LAST_LOG=$(docker logs dbgpt --tail 1 2>&1)
   
   if [[ "$LAST_LOG" == *"Code server is ready"* ]]; then
     BOOT_OK=1
