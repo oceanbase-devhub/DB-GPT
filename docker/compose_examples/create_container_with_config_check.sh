@@ -132,9 +132,8 @@ if [[ $BOOT_OK != 1 ]]; then
     exit
 fi
 
-add_db_resp=$(curl -s -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
--H "Content-Type: application/json" \
--d '{
+json_data=$(cat <<EOF
+{
     "db_type": "oceanbase",
     "db_name": "$DBGPT_OB_DATABASE",
     "file_path": "",
@@ -143,9 +142,15 @@ add_db_resp=$(curl -s -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
     "db_user": "$DBGPT_OB_USER",
     "db_pwd": "$DBGPT_OB_PASSWORD",
     "comment": ""
-}')
+}
+EOF
+)
 
-access_res=$(printf "$resp" | grep -F "{\"success\":true")
+add_db_resp=$(curl -s -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
+-H "Content-Type: application/json" \
+-d "$json_data")
+
+access_res=$(printf "$resp" | grep -F '{"success":true')
 if [ -n "$access_res" ]; then
     print_message "error" "预先在DB-GPT中创建 OceanBase 连接失败，请稍后根据教程在 Web UI 中设置\n"
     exit
