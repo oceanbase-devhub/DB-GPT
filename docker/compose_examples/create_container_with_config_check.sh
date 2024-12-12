@@ -127,21 +127,21 @@ while [ $ELAPSED -lt $TIMEOUT ]; do
   ELAPSED=$((ELAPSED + INTERVAL))
 done
 
-if [[ BOOT_OK != 1 ]]; then
+if [[ $BOOT_OK != 1 ]]; then
     print_message "error" "等待 DB-GPT 启动超过 ${TIMEOUT} 秒\n"
     exit
 fi
 
-add_db_resp=$(curl -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
+add_db_resp=$(curl -s -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
 -H "Content-Type: application/json" \
 -d '{
-    "db_type": "$DBGPT_OB_DATABASE",
+    "db_type": "oceanbase",
     "db_name": "$DBGPT_OB_DATABASE",
     "file_path": "",
     "db_host": "$DBGPT_OB_HOST",
     "db_port": $DBGPT_OB_PORT,
     "db_user": "$DBGPT_OB_USER",
-    "db_pwd": "",
+    "db_pwd": "$DBGPT_OB_PASSWORD",
     "comment": ""
 }')
 
