@@ -4,6 +4,7 @@ import logging
 import math
 import os
 import uuid
+import threading
 from typing import Any, List, Optional, Tuple
 
 import numpy as np
@@ -22,6 +23,8 @@ from dbgpt.storage.vector_store.filters import FilterOperator, MetadataFilters
 from dbgpt.util.i18n_utils import _
 
 logger = logging.getLogger(__name__)
+
+CREATE_TABLE_LOCK = threading.Lock()
 
 DEFAULT_OCEANBASE_BATCH_SIZE = 100
 DEFAULT_OCEANBASE_VECTOR_TABLE_NAME = "dbgpt_vector"
@@ -278,7 +281,8 @@ class OceanBaseStore(VectorStoreBase):
         metadatas = [d.metadata for d in chunks]
         embeddings = self.embedding_function.embed_documents(texts)
 
-        self._create_table_with_index(embeddings)
+        with CREATE_TABLE_LOCK:
+            self._create_table_with_index(embeddings)
 
         ids = [str(uuid.uuid4()) for _ in texts]
         pks: list[str] = []
