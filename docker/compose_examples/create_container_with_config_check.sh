@@ -74,7 +74,7 @@ resp=$(curl -s --location "$EMBED_PROXY_URL" \
 }')
 
 if [[ $? != 0 ]]; then
-    print_message "error" "可能存在网络问题!\n"
+    print_message "error" "访问通义 API 服务失败，可能存在网络问题!\n"
     exit
 fi
 
@@ -107,3 +107,48 @@ docker run --ipc host -d -p 5670:5670 \
 -e OB_USER=$DBGPT_OB_USER -e OB_PASSWORD=$DBGPT_OB_PASSWORD \
 -e OB_DATABASE=$DBGPT_OB_DATABASE -e PROXY_SERVER_URL=$LLM_PROXY_SERVER_URL \
 -e TONGYI_PROXY_API_KEY=$DBGPT_TONGYI_API_KEY --name dbgpt quay.io/oceanbase-devhub/dbgpt:latest
+
+# Wait for DB-GPT server boot.
+TIMEOUT=30
+INTERVAL=1
+ELAPSED=0
+BOOT_OK=0
+
+while [ $ELAPSED -lt $TIMEOUT ]; do
+  LAST_LOG=$(docker logs "$CONTAINER" --tail 1 2>&1)
+  
+  if [[ "$LAST_LOG" == *"Code server is ready"* ]]; then
+    BOOT_OK=1
+    break
+  fi
+  
+  # 等待一段时间后再检查
+  sleep $INTERVAL
+  ELAPSED=$((ELAPSED + INTERVAL))
+done
+
+if [[ BOOT_OK != 1 ]]; then
+    print_message "error" "等待 DB-GPT 启动超过 ${TIMEOUT} 秒\n"
+    exit
+fi
+
+add_db_resp=$(curl -X POST "http://127.0.0.1:5670/api/v1/chat/db/add" \
+-H "Content-Type: application/json" \
+-d '{
+    "db_type": "$DBGPT_OB_DATABASE",
+    "db_name": "$DBGPT_OB_DATABASE",
+    "file_path": "",
+    "db_host": "$DBGPT_OB_HOST",
+    "db_port": $DBGPT_OB_PORT,
+    "db_user": "$DBGPT_OB_USER",
+    "db_pwd": "",
+    "comment": ""
+}')
+
+access_res=$(printf "$resp" | grep -F "{\"success\":true")
+if [ -n "$access_res" ]; then
+    print_message "error" "预先在DB-GPT中创建 OceanBase 连接失败，请稍后根据教程在 Web UI 中设置\n"
+    exit
+else
+    print_message "success" "预先在DB-GPT中创建 OceanBase 连接成功\n"
+fi
