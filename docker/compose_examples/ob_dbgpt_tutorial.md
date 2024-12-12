@@ -90,6 +90,10 @@ cd ./DB-GPT/docker/compose_examples
 ./create_container_with_config_check.sh
 ```
 
+下面请按照脚本要求逐项填写参数配置：
+
+![设置启动参数](images/config_setting.png)
+
 该脚本会做如下几件事：
 
 * 要求用户设置相关参数，输出会包含各项的当前值，如果认可当前值，回车进行下一项；
@@ -102,10 +106,6 @@ cd ./DB-GPT/docker/compose_examples
     4. plant_and_animal_table：记录了一些动植物名称以及这些名称的向量表示；
 
 ![测试数据](images/sample_data.png)
-
-下面请按照脚本要求逐项填写参数配置：
-
-![设置启动参数](images/config_setting.png)
 
 使用以下命令查看 DB-GPT 启动情况，如果观察到最后日志显示 `Code server is ready` 则启动成功：
 
@@ -182,7 +182,7 @@ docker logs -f dbgpt
 
 ![创建chat data应用1](images/chatdata_app1.png)
 
-应用类型选择 `Chat Knowledge`，参数选择我们刚刚创建好的数据库连接，模型和温度含义与 `Chat Knowledge` 一致。
+应用类型选择 `Chat Data`，参数选择我们刚刚创建好的数据库连接，模型和温度含义与 `Chat Knowledge` 一致。
 
 ![创建chat data应用2](images/chatdata_app2.png)
 

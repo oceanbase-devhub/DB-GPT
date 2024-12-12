@@ -18,16 +18,16 @@ print_message() {
     local message=$2
     case $type in
     "info")
-        echo -e "${BLUE}$message${NC}"
+        printf "${BLUE}$message${NC}"
         ;;
     "success")
-        echo -e "${GREEN}$message${NC}"
+        printf "${GREEN}$message${NC}"
         ;;
     "error")
-        echo -e "${RED}$message${NC}"
+        printf "${RED}$message${NC}"
         ;;
     *)
-        echo -e "${BLUE}$message${NC}"
+        printf "${BLUE}$message${NC}"
         ;;
     esac
 }
@@ -38,22 +38,22 @@ update_env_var() {
     local current_value=${!var_name}
 
     # 提示用户输入新的值
-    read -p "$(echo -e $BLUE"${comment}（回车以保持当前值: ${current_value}）: "$NC)" new_value
+    read -p "$(printf $BLUE"${comment}（回车以保持当前值: ${current_value}）: "$NC)" new_value
 
     # 如果用户输入了新的值，则更新环境变量
     if [ -n "$new_value" ]; then
         export $var_name="$new_value"
-        echo "$var_name=\"$new_value\"" >> "$TMP_FILE"
+        printf "$var_name=\"$new_value\"\n" >> "$TMP_FILE"
     else
         export $var_name="$current_value"
-        echo "$var_name=\"$current_value\"" >> "$TMP_FILE"
+        printf "$var_name=\"$current_value\"\n" >> "$TMP_FILE"
     fi
 }
 
 update_env_var "DBGPT_TONGYI_API_KEY" "设置通义API KEY"
 update_env_var "DBGPT_OB_HOST" "设置OceanBase数据库主机地址"
 update_env_var "DBGPT_OB_PORT" "设置OceanBase数据库端口"
-update_env_var "DBGPT_OB_USER" "设置OceanBase数据库用户名"
+update_env_var "DBGPT_OB_USER" "设置OceanBase数据库用户名（或者用户名@租户名）"
 update_env_var "DBGPT_OB_PASSWORD" "设置OceanBase数据库密码"
 update_env_var "DBGPT_OB_DATABASE" "设置OceanBase数据库名"
 mv "$TMP_FILE" "$CONFIG_FILE"
@@ -78,7 +78,7 @@ if [[ $? != 0 ]]; then
     exit
 fi
 
-access_res=$(echo "$resp" | grep "code" | grep "message")
+access_res=$(printf "$resp" | grep "code" | grep "message")
 if [ -n "$access_res" ]; then
     print_message "error" "通义API KEY设置有误!\n"
     exit
