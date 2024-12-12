@@ -9,9 +9,11 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 
 ## 实验环境
 
+> 现场体验的用户，无需进行环境配置
+
 - Git
 - [Docker](https://docs.docker.com/engine/install/)
-- MySQL 客户端
+- MySQL 客户端（[如何安装](https://www.modb.pro/db/1681843673074589696)）
 
 ## 平台搭建步骤
 
@@ -94,6 +96,8 @@ cd ./DB-GPT/docker/compose_examples
 
 ![设置启动参数](images/config_setting.png)
 
+> 如果最后一步提示**预先在DB-GPT中创建 OceanBase 连接失败，请稍后根据教程在 Web UI 中设置**，可以照常进行后续步骤，在使用阶段[手动配置数据库](#创建数据库连接) 连接即可
+
 该脚本会做如下几件事：
 
 * 要求用户设置相关参数，输出会包含各项的当前值，如果认可当前值，回车进行下一项；
@@ -105,15 +109,10 @@ cd ./DB-GPT/docker/compose_examples
     3. orders：记录了用户购买产品的订单信息；
     4. plant_and_animal_table：记录了一些动植物名称以及这些名称的向量表示；
 
+* 启动 DB-GPT 服务并等待启动完毕；
+* 尝试向 DB-GPT 预先注册好 `chat data` 应用需要的数据库连接，脚本中直接使用 OceanBase 作为目标数据库；
+
 ![测试数据](images/sample_data.png)
-
-使用以下命令查看 DB-GPT 启动情况，如果观察到最后日志显示 `Code server is ready` 则启动成功：
-
-```bash
-docker logs -f dbgpt
-```
-
-![DB-GPT 运行日志](images/dbgpt_docker_log.png)
 
 ## 访问 DB-GPT 平台
 
@@ -150,6 +149,8 @@ docker logs -f dbgpt
 ![DB-GPT 知识库6](images/knowledge_create_6.png)
 
 ### 创建数据库连接
+
+> 在[启动 Docker 容器](#5-启动-docker-容器)步骤，运行`create_container_with_config_check.sh`脚本得到`预先在DB-GPT中创建 OceanBase 连接成功`提示的用户可以跳过此步骤。
 
 点击`数据库`，选择`OceanBase`数据库，`Create Now`：
 
