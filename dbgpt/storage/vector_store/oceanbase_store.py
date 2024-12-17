@@ -327,6 +327,8 @@ class OceanBaseStore(VectorStoreBase):
         param: Optional[dict] = None,
     ) -> List[Chunk]:
         """Perform a search on a query string and return results."""
+        if not self.vector_name_exists():
+            return []
         query_vector = self.embedding_function.embed_query(text)
         return self._similarity_search_by_vector(
             embedding=query_vector, k=topk, param=param, filters=filters
@@ -341,6 +343,8 @@ class OceanBaseStore(VectorStoreBase):
         param: Optional[dict] = None,
     ) -> List[Chunk]:
         """Perform a search on a query string and return results with score."""
+        if not self.vector_name_exists():
+            return []
         query_vector = self.embedding_function.embed_query(text)
         docs_with_id_and_scores = self._similarity_search_with_score_by_vector(
             embedding=query_vector, k=topk, param=param, filters=filters
@@ -491,3 +495,11 @@ class OceanBaseStore(VectorStoreBase):
                     f"is not supported by OceanBase."
                 )
         return f" {metafilters.condition.value} ".join(filters)
+    
+    def truncate(self) -> List[str]:
+        if not self.vector_name_exists():
+            return []
+        self.vector_store_client.perform_raw_text_sql(
+            f"TRUNCATE TABLE {self.table_name}"
+        )
+        return []

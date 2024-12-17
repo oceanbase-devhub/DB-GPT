@@ -155,7 +155,7 @@ class CommunitySummaryKnowledgeGraph(BuiltinKnowledgeGraph):
             self._model_name,
             VectorStoreFactory.create(
                 self._vector_store_type,
-                config.name + "_CHUNK_HISTORY",
+                config.name + "_chunk_history",
                 extractor_configure,
             ),
         )
@@ -175,7 +175,7 @@ class CommunitySummaryKnowledgeGraph(BuiltinKnowledgeGraph):
             CommunitySummarizer(self._llm_client, self._model_name),
             VectorStoreFactory.create(
                 self._vector_store_type,
-                config.name + "_COMMUNITY_SUMMARY",
+                config.name + "_community_summary",
                 community_store_configure,
             ),
         )

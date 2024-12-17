@@ -95,6 +95,17 @@ else
     print_message "success" "$DB_DATABASE 数据库连接与数据初始化成功~\n"
 fi
 
+if [ "$(docker ps -a -q -f name=tugraph_demo)" ]; then
+    docker rm -f tugraph_demo
+fi
+
+docker run -d -p 7070:7070  -p 7687:7687 -p 9090:9090 \
+--name tugraph_demo quay.io/oceanbase-devhub/tugraph-runtime-centos7:4.5.0 \
+lgraph_server -d run --enable_plugin true
+
+sleep 5
+TUGRAPH_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' tugraph_dem)
+
 if [ "$(docker ps -a -q -f name=dbgpt)" ]; then
     docker rm -f dbgpt
 fi
@@ -107,7 +118,7 @@ docker run --ipc host -d -p 5670:5670 \
 -e OB_USER=$DBGPT_OB_USER -e OB_PASSWORD=$DBGPT_OB_PASSWORD \
 -e OB_DATABASE=$DBGPT_OB_DATABASE -e PROXY_SERVER_URL=$LLM_PROXY_SERVER_URL \
 -e TONGYI_PROXY_API_KEY=$DBGPT_TONGYI_API_KEY \
--e GRAPH_STORE_TYPE=TuGraph -e TUGRAPH_HOST=127.0.0.1 -e TUGRAPH_PORT=7687 \
+-e GRAPH_STORE_TYPE=TuGraph -e TUGRAPH_HOST=$TUGRAPH_HOST -e TUGRAPH_PORT=7687 \
 -e TUGRAPH_USERNAME=admin -e TUGRAPH_PASSWORD=73@TuGraph \
 -e GRAPH_COMMUNITY_SUMMARY_ENABLED=True \
 -e TRIPLET_GRAPH_ENABLED=True \
