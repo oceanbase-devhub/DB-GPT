@@ -6,6 +6,49 @@
 
 OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，并且经过适配可以作为 DB-GPT 的可选向量数据库，支持 DB-GPT 对结构化数据和向量数据的存取需求，有力地支撑其上 LLM 应用的开发和落地，同时 DB-GPT 也通过 `chat data`、`chat db` 等应用为 OceanBase 提升易用性。
 
+鉴于传统 RAG 在概括性问题上存在的问题，DB-GPT 实现了一种基于知识图谱进行相关文档召回的 RAG 技术 —— GraphRAG。实现依赖图数据库和向量数据库作为文档数据存储和检索的基础组件。TuGraph是作为一个高效的图形数据库，支持高数据量、低延迟查找和快速图形分析的图数据库，可以与 OceanBase 的向量存储功能相结合，共同支持 DB-GPT GraphRAG 功能。
+
+## 技术简介
+
+### Chat Data / NL2SQL / Text2SQL
+
+DB-GPT 的 `chat data` 功能本质是自然语言转SQL技术（或称为`NL2SQL`/`Text2SQL`），原理如下图所示：
+
+**数据导入阶段**
+
+1. 获取数据库内用户表schema
+2. 将表名、列名、约束等嵌入为向量
+3. 存储到OceanBase向量数据库
+
+![chat data数据预处理](images/chat_data_pre.png)
+
+**自然语言查询阶段**
+
+1. 提问嵌入+向量搜索
+2. 获取相关表schema后生成SQL以及可视化方案
+3. 使用获取的数据最终输出
+
+![chat data查询阶段](images/chat_data_search.png)
+
+### GraphRAG
+
+**数据导入阶段**
+
+1. 文档分块；
+2. 依据文档层级结构，为分块建立父子关系；
+3. 使用 LLM 抽取文档块中的实体以及关系三元组：在此过程中使用向量数据库搜索出与当前处理文档块语义接近的块，增强抽取时大模型对上下文的语义理解；
+4. 使用社区算法获取出实体关系图中的子图划分，利用大模型为每个子图生成一段总结，向量化后存入数据库；
+
+![graphrag数据预处理](images/graph_rag_pre.png)
+
+**查询阶段**
+
+1. 通过社区总结的向量数据库获取出与查询问题相关的topK个社区；
+2. 将这些查询结果拼接为一个总的summary，让 LLM 抽取查询所需要的关键词；
+3. 获取包含关键词的实体、以及其一跳的邻居实体；
+4. 获取文档块，并在 LLM 的提示词中添加实体、关系的描述；
+
+![graphrag查询阶段](images/graph_rag_search.png)
 
 ## 实验环境
 
@@ -17,7 +60,7 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 
 ## 平台搭建步骤
 
-### 1. 获取 OceanBase 数据库
+### 1. 获取 OceanBase / TuGraph 数据库
 
 进行实验之前，我们需要先获取 OceanBase 数据库，目前可行的方式有两种：使用 OBCloud 实例或者[使用 Docker 本地部署单机版 OceanBase 数据库](#使用-docker-部署单机版-oceanbase-数据库)。我们在此推荐 OBCloud 实例，因为它部署和管理都更加简单，且不需要本地环境支持。
 
@@ -34,6 +77,16 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 #### 1.3 创建数据库
 
 创建数据库以存放示例数据以及向量数据。需要注意的是，在设置数据库名称的时候，为了便于用户在 DB-GPT 前端界面进行后续的操作，**强烈不建议用户使用以下四种名称**：（因为以下四种数据库名被 DB-GPT 保留，用户虽然能成功在 DB-GPT 侧建立连接，但是无法在 Web UI 中进行后续的应用管理操作）
+
+#### 1.4 拉取 TuGraph 镜像
+
+> 现场体验的用户，无需拉取，请跳过本步骤
+
+使用以下命令获取：
+
+```bash
+docker pull quay.io/oceanbase-devhub/tugraph-runtime-centos7:4.5.0
+```
 
 - auth
 - dbgpt
@@ -109,6 +162,7 @@ cd ./DB-GPT/docker/compose_examples
     3. orders：记录了用户购买产品的订单信息；
     4. plant_and_animal_table：记录了一些动植物名称以及这些名称的向量表示；
 
+* 启动 TuGraph 并等待启动完毕；
 * 启动 DB-GPT 服务并等待启动完毕；
 * 尝试向 DB-GPT 预先注册好 `chat data` 应用需要的数据库连接，脚本中直接使用 OceanBase 作为目标数据库；
 
@@ -135,7 +189,7 @@ cd ./DB-GPT/docker/compose_examples
 
 然后按照配置引导进行设置：
 
-知识库名称、描述等可自定义。
+知识库名称、描述可自定义。**本教程默认演示 GraphRAG 功能，所以存储类型选择为`Knowldege Graph`，如需使用完全基于向量搜索的传统 RAG 请选择存储类型为`Vector Store`。**
 ![DB-GPT 知识库2](images/knowledge_create_2.png)
 
 这里我选择普通文档作为示例，用户可自行尝试其他类型。
@@ -144,9 +198,13 @@ cd ./DB-GPT/docker/compose_examples
 点击`选择或拖拽文件`区域，选择符合格式要求的文件
 ![DB-GPT 知识库4](images/knowledge_create_4.png)
 
-默认选择`自动切片`，点击`切片处理`即可。耐心等待处理完成，处理会自动退出配置界面，并弹出成功消息
+默认选择`自动切片`，点击`切片处理`即可。耐心等待处理完成，处理会自动退出配置界面，并弹出成功消息。**需要注意的是 GraphRAG 相对于传统的 RAG 来说在导入文档、构建索引部分相对耗时，请耐心等待，感兴趣的用户可以在服务部署机器上使用`docker logs -f dbgpt`命令查看处理过程的日志**
 ![DB-GPT 知识库5](images/knowledge_create_5.png)
-![DB-GPT 知识库6](images/knowledge_create_6.png)
+
+然后点击创建好的知识库，点击`查看图谱`，可以看到文档经过处理后的实体-关系图：
+![DB-GPT 知识库6](images/view_graph_1.png)
+![DB-GPT 知识库7](images/view_graph_2.png)
+![DB-GPT 知识库8](images/view_graph_3.png)
 
 ### 创建数据库连接
 
