@@ -6,6 +6,8 @@
 
 OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，并且经过适配可以作为 DB-GPT 的可选向量数据库，支持 DB-GPT 对结构化数据和向量数据的存取需求，有力地支撑其上 LLM 应用的开发和落地，同时 DB-GPT 也通过 `chat data`、`chat db` 等应用为 OceanBase 提升易用性。
 
+TuGraph 从 4.5.0 版本开始支持了 DB-GPT GraphRAG 的三元组抽取、社区摘要、文档结构图谱和混合检索能力。
+
 
 ## 实验环境
 
@@ -17,7 +19,7 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 
 ## 平台搭建步骤
 
-### 1. 获取 OceanBase 数据库
+### 1. 获取 OceanBase / TuGraph 数据库
 
 进行实验之前，我们需要先获取 OceanBase 数据库，目前可行的方式有两种：使用 OBCloud 实例或者[使用 Docker 本地部署单机版 OceanBase 数据库](#使用-docker-部署单机版-oceanbase-数据库)。我们在此推荐 OBCloud 实例，因为它部署和管理都更加简单，且不需要本地环境支持。
 
@@ -41,6 +43,29 @@ OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，
 - public
 
 ![创建数据库](images/create-db.png)
+
+#### 1.4 启动TuGraph图数据库
+
+拉取TuGraph的4.5.0版本的docker镜像。
+```
+docker pull tugraph/tugraph-runtime-centos7:4.5.0
+```
+
+启动TuGraph数据库，默认bolt协议连接端口是7687，web管理端口是7070。
+```
+docker run -d -p 7070:7070  -p 7687:7687 -p 9090:9090 \
+--name tugraph_demo tugraph/tugraph-runtime-centos7:latest \
+lgraph_server -d run --enable_plugin true
+```
+
+访问`https://127.0.0.1:7070`，输入默认账户密码登录TuGraph管理页面。
+```
+地址：bolt://127.0.0.1:7687
+用户：admin
+密码：73@TuGraph
+```
+![登录TuGraph](images/tugraph-login.png)
+
 
 ### 2. 申请模型 API KEY
 
@@ -138,6 +163,9 @@ cd ./DB-GPT/docker/compose_examples
 知识库名称、描述等可自定义。
 ![DB-GPT 知识库2](images/knowledge_create_2.png)
 
+如果希望体验GraphRAG，请选择`Knowledge Graph`类型，知识库会自动选择TuGraph作为存储底座。
+![创建KG](images/create_knowledge_graph.png)
+
 这里我选择普通文档作为示例，用户可自行尝试其他类型。
 ![DB-GPT 知识库3](images/knowledge_create_3.png)
 
@@ -147,6 +175,9 @@ cd ./DB-GPT/docker/compose_examples
 默认选择`自动切片`，点击`切片处理`即可。耐心等待处理完成，处理会自动退出配置界面，并弹出成功消息
 ![DB-GPT 知识库5](images/knowledge_create_5.png)
 ![DB-GPT 知识库6](images/knowledge_create_6.png)
+
+如果知识库选择了`Knowledge Graph`，可以预览抽取后的知识图谱，并支持直接对话。
+![KG预览](images/graph_data.png)
 
 ### 创建数据库连接
 
