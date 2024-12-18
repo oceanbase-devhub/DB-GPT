@@ -104,7 +104,13 @@ docker run -d -p 7070:7070  -p 7687:7687 -p 9090:9090 \
 lgraph_server -d run --enable_plugin true
 
 sleep 5
-TUGRAPH_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' tugraph_dem)
+TUGRAPH_HOST=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' tugraph_demo)
+if [ $? != 0 ]; then
+    print_message "error" "TuGraph docker 启动失败\n"
+    exit
+else
+    print_message "success" "TuGraph docker 启动成功！\n"
+fi
 
 if [ "$(docker ps -a -q -f name=dbgpt)" ]; then
     docker rm -f dbgpt
