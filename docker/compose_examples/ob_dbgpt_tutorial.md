@@ -78,6 +78,13 @@ DB-GPT 的 `chat data` 功能本质是自然语言转SQL技术（或称为`NL2SQ
 
 创建数据库以存放示例数据以及向量数据。需要注意的是，在设置数据库名称的时候，为了便于用户在 DB-GPT 前端界面进行后续的操作，**强烈不建议用户使用以下四种名称**：（因为以下四种数据库名被 DB-GPT 保留，用户虽然能成功在 DB-GPT 侧建立连接，但是无法在 Web UI 中进行后续的应用管理操作）
 
+- auth
+- dbgpt
+- test
+- public
+
+![创建数据库](images/create-db.png)
+
 #### 1.4 拉取 TuGraph 镜像
 
 > 现场体验的用户，无需拉取，请跳过本步骤
@@ -87,13 +94,6 @@ DB-GPT 的 `chat data` 功能本质是自然语言转SQL技术（或称为`NL2SQ
 ```bash
 docker pull quay.io/oceanbase-devhub/tugraph-runtime-centos7:4.5.0
 ```
-
-- auth
-- dbgpt
-- test
-- public
-
-![创建数据库](images/create-db.png)
 
 ### 2. 申请模型 API KEY
 
