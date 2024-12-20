@@ -153,7 +153,6 @@ done
 
 if [[ $BOOT_OK != 1 ]]; then
     print_message "error" "等待 DB-GPT 启动超过 ${TIMEOUT} 秒\n"
-    exit
 fi
 
 json_data=$(cat <<EOF
@@ -181,3 +180,6 @@ if [ -n "$access_res" ]; then
 else
     print_message "success" "预先在DB-GPT中创建 OceanBase 连接成功\n"
 fi
+
+SERVER_IP=$(curl http://ifconfig.me)
+print_message "success" "访问 http://${SERVER_IP}:5670 开始使用"
