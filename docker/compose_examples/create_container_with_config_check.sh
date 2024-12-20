@@ -181,5 +181,5 @@ else
     print_message "success" "预先在DB-GPT中创建 OceanBase 连接成功\n"
 fi
 
-SERVER_IP=$(curl http://ifconfig.me)
+SERVER_IP=$(curl -s http://ifconfig.me)
 print_message "success" "访问 http://${SERVER_IP}:5670 开始使用"
