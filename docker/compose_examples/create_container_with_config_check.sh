@@ -182,4 +182,4 @@ else
 fi
 
 SERVER_IP=$(curl -s http://ifconfig.me)
-print_message "success" "访问 http://${SERVER_IP}:5670 开始使用"
+print_message "success" "访问 http://${SERVER_IP}:5670 开始使用\n"
