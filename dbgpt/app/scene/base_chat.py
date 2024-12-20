@@ -504,6 +504,9 @@ class BaseChat(ABC):
 
         """
         antv_charts = [
+            {
+                "response_vector_chart": "Suitable for visualization of vector datas or vector columns. If the user mentions vector visualization, this must be given priority."
+            },
             {"response_line_chart": "used to display comparative trend analysis data"},
             {
                 "response_pie_chart": "suitable for scenarios such as proportion and distribution statistics"
@@ -526,9 +529,6 @@ class BaseChat(ABC):
             },
             {
                 "response_heatmap": "Suitable for visual analysis of time series data, large-scale data sets, distribution of classified data, etc."
-            },
-            {
-                "response_vector_chart": "Suitable for visualization of vector datas or vector columns."
             },
         ]
 
