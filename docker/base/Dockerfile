@@ -33,7 +33,7 @@ RUN pip3 install --upgrade pip -i $PIP_INDEX_URL \
     && pip3 install -i $PIP_INDEX_URL ".[$DB_GPT_INSTALL_MODEL]" \
     # install openai for proxyllm
     && pip3 install -i $PIP_INDEX_URL ".[openai]" \
-    && pip3 install pyobvector
+    && pip3 install pyobvector==0.1.18
 
 # Not install spacy model for now
 #RUN (if [ "${LANGUAGE}" = "zh" ]; \

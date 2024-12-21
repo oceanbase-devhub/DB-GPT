@@ -182,4 +182,4 @@ else
 fi
 
 SERVER_IP=$(curl -s http://ifconfig.me)
-print_message "success" "访问 http://${SERVER_IP}:5670 开始使用\n"
+print_message "success" "远程部署请访问 http://${SERVER_IP}:5670 开始使用，本地部署请访问 http://127.0.0.1:5670 \n"
