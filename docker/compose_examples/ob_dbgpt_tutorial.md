@@ -1,12 +1,12 @@
 ## 实验背景
 
-🤖️ **DB-GPT是一个开源的AI原生数据应用开发框架(AI Native Data App Development framework with AWEL(Agentic Workflow Expression Language) and Agents)。**
+🤖️ **[DB-GPT](https://github.com/eosphoros-ai/DB-GPT)是一个开源的AI原生数据应用开发框架(AI Native Data App Development framework with AWEL(Agentic Workflow Expression Language) and Agents)。**
 
 目的是构建大模型领域的基础设施，通过开发多模型管理(SMMF)、Text2SQL效果优化、RAG框架以及优化、Multi-Agents框架协作、AWEL(智能体工作流编排)等多种技术能力，让围绕数据库构建大模型应用更简单，更方便。 
 
-OceanBase 从 4.3.3 版本开始支持了向量数据类型的存储和检索，并且经过适配可以作为 DB-GPT 的可选向量数据库，支持 DB-GPT 对结构化数据和向量数据的存取需求，有力地支撑其上 LLM 应用的开发和落地，同时 DB-GPT 也通过 `chat data`、`chat db` 等应用为 OceanBase 提升易用性。
+[OceanBase](https://github.com/oceanbase/oceanbase) 从 4.3.3 版本开始支持了向量数据类型的存储和检索，并且经过适配可以作为 DB-GPT 的可选向量数据库，支持 DB-GPT 对结构化数据和向量数据的存取需求，有力地支撑其上 LLM 应用的开发和落地，同时 DB-GPT 也通过 `chat data`、`chat db` 等应用为 OceanBase 提升易用性。
 
-鉴于传统 RAG 在概括性问题上存在的问题，DB-GPT 实现了一种基于知识图谱进行相关文档召回的 RAG 技术 —— GraphRAG。实现依赖图数据库和向量数据库作为文档数据存储和检索的基础组件。TuGraph是作为一个高效的图形数据库，支持高数据量、低延迟查找和快速图形分析的图数据库，可以与 OceanBase 的向量存储功能相结合，共同支持 DB-GPT GraphRAG 功能。
+鉴于传统 RAG 在概括性问题上存在的问题，DB-GPT 实现了一种基于知识图谱进行相关文档召回的 RAG 技术 —— GraphRAG。实现依赖图数据库和向量数据库作为文档数据存储和检索的基础组件。[TuGraph](https://github.com/tuGraph-family/tugraph-db)是作为一个高效的图形数据库，支持高数据量、低延迟查找和快速图形分析的图数据库，可以与 OceanBase 的向量存储功能相结合，共同支持 DB-GPT GraphRAG 功能。
 
 ## 技术简介
 
