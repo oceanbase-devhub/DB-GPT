@@ -88,7 +88,7 @@ DB-GPT 的 `chat data` 功能本质是自然语言转SQL技术（或称为`NL2SQ
 
 #### 1.1 注册并开通 OBCloud 实例
 
-进入[OB Cloud 云数据库 365 天免费试用](https://www.oceanbase.com/free-trial)页面，点击“立即试用”按钮，注册并登录账号，填写相关信息，开通实例，等待创建完成。
+进入[OB Cloud 云数据库 365 天免费试用](https://www.oceanbase.com/free-trial?utm_source=ai)页面，点击“立即试用”按钮，注册并登录账号，填写相关信息，开通实例，等待创建完成。
 
 #### 1.2 获取数据库实例连接串
 
