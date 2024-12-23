@@ -8,6 +8,28 @@
 
 鉴于传统 RAG 在概括性问题上存在的问题，DB-GPT 实现了一种基于知识图谱进行相关文档召回的 RAG 技术 —— GraphRAG。实现依赖图数据库和向量数据库作为文档数据存储和检索的基础组件。[TuGraph](https://github.com/tuGraph-family/tugraph-db)是作为一个高效的图形数据库，支持高数据量、低延迟查找和快速图形分析的图数据库，可以与 OceanBase 的向量存储功能相结合，共同支持 DB-GPT GraphRAG 功能。
 
+## 实验简介
+
+### Chat Data
+
+`Chat Data` 技术允许用户通过自然语言对话与数据系统进行互动。用户可以提出问题或请求，系统根据用户的意图和历史交互记录，自动生成对数据系统的查询、管理操作，并进一步提供数据可视化、分析能力。
+
+针对关系型数据库场景来说，`Text2SQL` 是 `Chat Data` 的技术核心，其目的是将自然语言查询转换为 SQL。用户可以用简单的自然语言描述他们想要提取的数据，比如“显示2023年销售额最高的产品”，系统能够自动解析并生成相应的 SQL 语句，比如 `SELECT product_name FROM sales WHERE year = 2023 ORDER BY sales_amount DESC LIMIT 1;` 。这种技术在数据库查询、商业智能和数据分析工具中尤为重要，使得非技术用户也能轻松进行复杂的数据查询。
+
+`DB-GPT Chat Data` 应用效果：
+
+![chatdata_example](./images/chat_data_example.png)
+
+### GraphRAG
+
+传统 `RAG` 通常使用向量检索作为文档召回器，在检索精确度方面具有一定的优势，然而在处理诸如 “这篇文章的主题是什么？”、“总结一下文档” 等概括性、综合性问题时存在困难，这些问题通常涉及多个文档知识的整合，要求文档搜索的广度而非精确度。
+
+为了解决这个问题，`GraphRAG` 被提出。该技术创新地提出使用图结构存储外部知识，外部知识通常是"主-谓-宾"结构的，而图结构的节点可以描述主语和宾语，图中的边可以描述谓语，`GraphRAG` 符合知识建模，从而有效提升文档召回和回答质量；此外，社区划分和总结使得在检索时考虑高层级的综合性知识，在保证搜索精度的同时，提升搜索的广度。
+
+`DB-GPT GraphRAG` 应用效果：
+
+![graphrag_example](./images/chat_kb_example.png)
+
 ## 技术简介
 
 ### Chat Data / NL2SQL / Text2SQL
